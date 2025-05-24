@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расчет зарплаты машиниста метро</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .form-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        .month-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .month-tab {
+            padding: 10px 20px;
+            background-color: #eee;
+            margin-right: 5px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+        }
+        .month-tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .month-content {
+            display: none;
+        }
+        .month-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Расчет зарплаты машиниста электропоезда</h1>
+        
+        <div class="form-section">
+            <h2>Общая информация</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="employee-name">ФИО сотрудника</label>
+                    <input type="text" id="employee-name" placeholder="Например: Иванов И.И.">
+                </div>
+                <div class="form-group">
+                    <label for="employee-id">Табельный номер</label>
+                    <input type="text" id="employee-id" placeholder="Например: 13001897">
+                </div>
+                <div class="form-group">
+                    <label for="position">Должность</label>
+                    <input type="text" id="position" value="Машинист электропоезда" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="department">Подразделение</label>
+                    <input type="text" id="department" value="Лок. бригады-машинисты электропоездов" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="base-salary">Оклад/тарифная ставка (руб.)</label>
+                    <input type="number" id="base-salary" value="520.17">
+                </div>
+                <div class="form-group">
+                    <label for="work-plan">План: смен/часов</label>
+                    <input type="text" id="work-plan" placeholder="Например: 25,00/150,15">
+                </div>
+                <div class="form-group">
+                    <label for="work-fact">Факт: смен/часов</label>
+                    <input type="text" id="work-fact" placeholder="Например: 16,00/105,15">
+                </div>
+            </div>
+        </div>
+
+        <div class="month-tabs">
+            <div class="month-tab active" data-month="1">Январь</div>
+            <div class="month-tab" data-month="2">Февраль</div>
+            <div class="month-tab" data-month="3">Март</div>
+            <div class="month-tab" data-month="4">Апрель</div>
+            <div class="month-tab" data-month="5">Май</div>
+            <div class="month-tab" data-month="6">Июнь</div>
+            <div class="month-tab" data-month="7">Июль</div>
+            <div class="month-tab" data-month="8">Август</div>
+            <div class="month-tab" data-month="9">Сентябрь</div>
+            <div class="month-tab" data-month="10">Октябрь</div>
+            <div class="month-tab" data-month="11">Ноябрь</div>
+            <div class="month-tab" data-month="12">Декабрь</div>
+        </div>
+
+        <div class="month-content active" data-month="1">
+            <div class="form-section">
+                <h2>Начисления за январь</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-hours-main">Часы по тарифной ставке</label>
+                        <input type="number" id="jan-hours-main" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-hours-reserve">Часы по тарифной ставке (резерв)</label>
+                        <input type="number" id="jan-hours-reserve" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-gap-hours">Разрывные часы</label>
+                        <input type="number" id="jan-gap-hours" step="0.01" placeholder="Часы">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-premium-percent">Ежемесячная премия (%)</label>
+                        <input type="number" id="jan-premium-percent" step="0.01" placeholder="Процент">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-evening-hours">Доплата за вечернее время (часы)</label>
+                        <input type="number" id="jan-evening-hours" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-evening-reserve">Доплата за вечер (резерв) (часы)</label>
+                        <input type="number" id="jan-evening-reserve" step="0.01" placeholder="Часы">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-night-hours">Доплата за ночное время (часы)</label>
+                        <input type="number" id="jan-night-hours" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-night-reserve">Доплата за ночь (резерв) (часы)</label>
+                        <input type="number" id="jan-night-reserve" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-study-hours">Техническая учеба (часы)</label>
+                        <input type="number" id="jan-study-hours" step="0.01" placeholder="Часы">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-overtime-100">Сверхурочные 100% (часы)</label>
+                        <input type="number" id="jan-overtime-100" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-overtime-50">Сверхурочные 50% (часы)</label>
+                        <input type="number" id="jan-overtime-50" step="0.01" placeholder="Часы">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-holiday-hours">Работа в праздники (часы)</label>
+                        <input type="number" id="jan-holiday-hours" step="0.01" placeholder="Часы">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-seniority-percent">Выслуга лет (%)</label>
+                        <input type="number" id="jan-seniority-percent" step="0.01" placeholder="Процент">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-qualification-bonus">Надбавка за класс квалификации (%)</label>
+                        <input type="number" id="jan-qualification-bonus" step="0.01" placeholder="Процент">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-personal-bonus">Персональная надбавка (%)</label>
+                        <input type="number" id="jan-personal-bonus" step="0.01" placeholder="Процент">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-food-payment">Оплата питания (руб.)</label>
+                        <input type="number" id="jan-food-payment" step="0.01" placeholder="Рубли">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-sick-days">Оплата по больничному листу (дни)</label>
+                        <input type="number" id="jan-sick-days" step="0.01" placeholder="Дни">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-vacation-days">Ежегодный отпуск (дни)</label>
+                        <input type="number" id="jan-vacation-days" step="0.01" placeholder="Дни">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jan-extra-vacation">Дополнительный отпуск (дни)</label>
+                        <input type="number" id="jan-extra-vacation" step="0.01" placeholder="Дни">
+                    </div>
+                    <div class="form-group">
+                        <label for="jan-one-time-payment">Разовая выплата (руб.)</label>
+                        <input type="number" id="jan-one-time-payment" step="0.01" placeholder="Рубли">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Аналогичные блоки для других месяцев (февраль-декабрь) -->
+        <!-- Для краткости в примере показан только январь -->
+
+        <div class="form-section">
+            <h2>Годовые накопления</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="total-income">Общая сумма дохода (руб.)</label>
+                    <input type="number" id="total-income" step="0.01" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="year-bonus">Сумма для годовой премии (руб.)</label>
+                    <input type="number" id="year-bonus" step="0.01" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="tax-deduction">Налоговый вычет на иждивенцев (руб.)</label>
+                    <input type="number" id="tax-deduction" step="0.01" value="0">
+                </div>
+            </div>
+        </div>
+
+        <button id="calculate-btn">Рассчитать зарплату</button>
+
+        <div class="result-section hidden" id="result-section">
+            <h2>Результаты расчета</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="total-accrued">Итого начислено (руб.)</label>
+                    <input type="number" id="total-accrued" step="0.01" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="total-deducted">Итого удержано (руб.)</label>
+                    <input type="number" id="total-deducted" step="0.01" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="total-to-pay">К выдаче на руки (руб.)</label>
+                    <input type="number" id="total-to-pay" step="0.01" readonly>
+                </div>
+            </div>
+            
+            <h3>Детализация начислений</h3>
+            <table id="accruals-table">
+                <thead>
+                    <tr>
+                        <th>Вид оплаты</th>
+                        <th>Часы/дни/%</th>
+                        <th>Начислено (руб.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Заполняется JavaScript -->
+                </tbody>
+            </table>
+            
+            <h3>Детализация удержаний</h3>
+            <table id="deductions-table">
+                <thead>
+                    <tr>
+                        <th>Вид удержания</th>
+                        <th>Сумма (руб.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Заполняется JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="salary-calculator.js"></script>
+</body>
+  </html>
